@@ -10,6 +10,7 @@ public class LoadLoginScene : MonoBehaviour
     public void LoadSceneLoginChat()
     {
         LoadScene.socket.Close();
+        PlayerPrefs.DeleteKey("nameRoom");
         SceneManager.LoadScene("LoginChat");
     }
 

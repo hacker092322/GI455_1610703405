@@ -18,7 +18,10 @@ public class TextFromSever : MonoBehaviour
     // typeText = 2 = connect text
     // typeText = 3 = disconnect text
 
-    List<string> data = new List<string>();
+    //List<string> data = new List<string>();
+
+    string sendData;
+    string[] splitData;
 
     void Start()
     {
@@ -32,7 +35,13 @@ public class TextFromSever : MonoBehaviour
 
     public void OnMessage(object sender, MessageEventArgs messageEventArgs)
     {
-        data.Add(messageEventArgs.Data);
+        sendData = messageEventArgs.Data;
+        print(sendData);
+        splitData = sendData.Split(';');
+        print(splitData);
+        print(splitData[0]);
+
+        /*data.Add(messageEventArgs.Data);
         for (int i = 0; i < data.Count; i++)
         {
             if (i == 0)
@@ -63,7 +72,7 @@ public class TextFromSever : MonoBehaviour
             {
                 senderName = data[i];
             }
-        }   
+        }   */
         sendText = true;
     }
 
@@ -76,7 +85,33 @@ public class TextFromSever : MonoBehaviour
                     textInScene.transform.Translate(0, 20, 0);
                 }
 
-            if (typeText == 1)
+            if (splitData[0] == 0.ToString())
+            {
+                createText.GetComponent<Text>().text = splitData[1];
+                createText.GetComponent<Text>().alignment = TextAnchor.LowerRight;
+            }
+
+            else if (splitData[0] == 1.ToString())
+            {
+                createText.GetComponent<Text>().text = "<" + splitData[1] + "> " + splitData[2];
+                createText.GetComponent<Text>().alignment = TextAnchor.LowerLeft;
+            }
+
+            else if (splitData[0] == 2.ToString())
+            {
+                createText.GetComponent<Text>().text = splitData[1] + " is connecting";
+                createText.GetComponent<Text>().alignment = TextAnchor.LowerCenter;
+                createText.GetComponent<Text>().color = Color.green;
+            }
+
+            else if (splitData[0] == 3.ToString())
+            {
+                createText.GetComponent<Text>().text = splitData[1] + " is disconnecting";
+                createText.GetComponent<Text>().alignment = TextAnchor.LowerCenter;
+                createText.GetComponent<Text>().color = Color.red;
+            }
+
+            /*if (typeText == 1)
             {
                 createText.GetComponent<Text>().text = "<"+ senderName + "> " + severText;
                 createText.GetComponent<Text>().alignment = TextAnchor.LowerLeft;
@@ -101,11 +136,11 @@ public class TextFromSever : MonoBehaviour
                 createText.GetComponent<Text>().alignment = TextAnchor.LowerCenter;
                 createText.GetComponent<Text>().color = Color.red;
             }
+            */
 
             GameObject chatText = Instantiate<GameObject>(createText, new Vector3(-1.049e-05f, -275.89f, 0), Quaternion.identity);
             chatText.transform.SetParent(chatTransform, false);
             createText.GetComponent<Text>().color = Color.black;
-            data.Clear();
             sendText = false;
         }
     }
